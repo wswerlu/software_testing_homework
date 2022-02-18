@@ -1,1 +1,1 @@
-Repository for homework for the course programming in python for testers.
+Repository for homework for the course Programming in python for testers.

@@ -1,1 +1,1 @@
-# software_testing_homework
+Repository for homework for the course programming in python for testers.

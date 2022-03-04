@@ -7,6 +7,7 @@ class ContactHelper:
         wd.find_element_by_link_text("home").click()
 
     def fill_contact_form(self, contact):
+        wd = self.app.wd
         self.change_field_name("firstname", contact.firstname)
         self.change_field_name("lastname", contact.lastname)
         self.change_field_name("address", contact.address)

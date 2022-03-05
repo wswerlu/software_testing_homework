@@ -52,3 +52,13 @@ class ContactHelper:
         # submit contact editing
         wd.find_element_by_name("update").click()
         self.return_to_home_page()
+
+    def count(self):
+        wd = self.app.wd
+        self.open_contact_page()
+        return len(wd.find_elements_by_name("selected[]"))
+
+    def is_contact_present(self, contact):
+        wd = self.app.wd
+        if self.count() == 0:
+            self.create(contact)

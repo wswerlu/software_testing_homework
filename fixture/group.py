@@ -62,7 +62,7 @@ class GroupHelper:
         self.open_groups_page()
         return len(wd.find_elements_by_name("selected[]"))
 
-    def is_group_present(self, group):
+    def create_group_if_it_not_exist(self, group):
         wd = self.app.wd
         if self.count() == 0:
             self.create(group)

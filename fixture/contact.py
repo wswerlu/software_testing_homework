@@ -59,7 +59,7 @@ class ContactHelper:
         self.open_contact_page()
         return len(wd.find_elements_by_name("selected[]"))
 
-    def create_contact_if_is_not_exist(self, contact):
+    def create_contact_if_it_not_exist(self, contact):
         wd = self.app.wd
         if self.count() == 0:
             self.create(contact)

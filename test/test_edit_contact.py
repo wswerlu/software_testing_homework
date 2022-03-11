@@ -3,14 +3,23 @@ from model.contact import Contact
 
 def test_edit_contact_firstname(app):
     app.contact.create_contact_if_it_not_exist(Contact(firstname="test"))
+    old_contact = app.contact.get_contact_list()
     app.contact.edit_first_contact(Contact(firstname="test edit"))
+    new_contact = app.contact.get_contact_list()
+    assert len(old_contact) == len(new_contact)
 
 
 def test_edit_contact_address(app):
     app.contact.create_contact_if_it_not_exist(Contact(firstname="test"))
+    old_contact = app.contact.get_contact_list()
     app.contact.edit_first_contact(Contact(address="test edit"))
+    new_contact = app.contact.get_contact_list()
+    assert len(old_contact) == len(new_contact)
 
 
 def test_edit_contact_email(app):
     app.contact.create_contact_if_it_not_exist(Contact(firstname="test"))
+    old_contact = app.contact.get_contact_list()
     app.contact.edit_first_contact(Contact(email="test edit"))
+    new_contact = app.contact.get_contact_list()
+    assert len(old_contact) == len(new_contact)

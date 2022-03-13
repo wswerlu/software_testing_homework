@@ -33,6 +33,7 @@ class ContactHelper:
         # submit contact creation
         wd.find_element_by_xpath("//input[21]").click()
         self.return_to_home_page()
+        self.contact_cache = None
 
     def return_to_home_page(self):
         wd = self.app.wd
@@ -46,6 +47,7 @@ class ContactHelper:
         # submit deletion
         wd.find_element_by_css_selector("[value='Delete']").click()
         wd.switch_to.alert.accept()
+        self.contact_cache = None
 
     def edit_first_contact(self, contact):
         wd = self.app.wd
@@ -56,6 +58,7 @@ class ContactHelper:
         # submit contact editing
         wd.find_element_by_name("update").click()
         self.return_to_home_page()
+        self.contact_cache = None
 
     def count(self):
         wd = self.app.wd
@@ -67,17 +70,20 @@ class ContactHelper:
         if self.count() == 0:
             self.create(contact)
 
+    contact_cache = None
+
     def get_contact_list(self):
-        wd = self.app.wd
-        self.open_contact_page()
-        contacts = []
-        for element in wd.find_elements_by_name("entry"):
-            firstname = element.find_element_by_css_selector("td:nth-child(3)").text
-            lastname = element.find_element_by_css_selector("td:nth-child(2)").text
-            address = element.find_element_by_css_selector("td:nth-child(4)").text
-            phone = element.find_element_by_css_selector("td:nth-child(5)").text
-            email = element.find_element_by_css_selector("td:nth-child(6)").text
-            id = element.find_element_by_name("selected[]").get_attribute("id")
-            contacts.append(Contact(firstname=firstname, lastname=lastname, address=address, home_phone=phone,
-                                    email=email, id=id))
-        return contacts
+        if self.contact_cache is None:
+            wd = self.app.wd
+            self.open_contact_page()
+            self.contact_cache = []
+            for element in wd.find_elements_by_name("entry"):
+                firstname = element.find_element_by_css_selector("td:nth-child(3)").text
+                lastname = element.find_element_by_css_selector("td:nth-child(2)").text
+                address = element.find_element_by_css_selector("td:nth-child(4)").text
+                phone = element.find_element_by_css_selector("td:nth-child(5)").text
+                email = element.find_element_by_css_selector("td:nth-child(6)").text
+                id = element.find_element_by_name("selected[]").get_attribute("id")
+                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, address=address,
+                                                  home_phone=phone, email=email, id=id))
+        return list(self.contact_cache)

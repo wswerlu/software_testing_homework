@@ -72,12 +72,12 @@ class ContactHelper:
         self.open_contact_page()
         contacts = []
         for element in wd.find_elements_by_name("entry"):
-            firstname = wd.find_element_by_css_selector("td:nth-child(3)").text
-            lastname = wd.find_element_by_css_selector("td:nth-child(2)").text
-            address = wd.find_element_by_css_selector("td:nth-child(4)").text
-            phone = wd.find_element_by_css_selector("td:nth-child(5)").text
-            email = wd.find_element_by_css_selector("td:nth-child(6)").text
-            id = wd.find_element_by_name("selected[]").get_attribute("id")
+            firstname = element.find_element_by_css_selector("td:nth-child(3)").text
+            lastname = element.find_element_by_css_selector("td:nth-child(2)").text
+            address = element.find_element_by_css_selector("td:nth-child(4)").text
+            phone = element.find_element_by_css_selector("td:nth-child(5)").text
+            email = element.find_element_by_css_selector("td:nth-child(6)").text
+            id = element.find_element_by_name("selected[]").get_attribute("id")
             contacts.append(Contact(firstname=firstname, lastname=lastname, address=address, home_phone=phone,
                                     email=email, id=id))
         return contacts

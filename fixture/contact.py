@@ -113,12 +113,17 @@ class ContactHelper:
         firstname = wd.find_element_by_name("firstname").get_attribute("value")
         lastname = wd.find_element_by_name("lastname").get_attribute("value")
         id = wd.find_element_by_name("id").get_attribute("value")
+        address = wd.find_element_by_name("address").text
         homephone = wd.find_element_by_name("home").get_attribute("value")
         mobilephone = wd.find_element_by_name("mobile").get_attribute("value")
         workphone = wd.find_element_by_name("work").get_attribute("value")
         secondaryphone = wd.find_element_by_name("phone2").get_attribute("value")
-        return Contact(firstname=firstname, lastname=lastname, id=id, homephone=homephone, mobilephone=mobilephone,
-                       workphone=workphone, secondaryphone=secondaryphone)
+        email = wd.find_element_by_name("email").get_attribute("value")
+        email2 = wd.find_element_by_name("email2").get_attribute("value")
+        email3 = wd.find_element_by_name("email3").get_attribute("value")
+        return Contact(firstname=firstname, lastname=lastname, id=id, address=address,
+                       homephone=homephone, mobilephone=mobilephone,
+                       workphone=workphone, secondaryphone=secondaryphone, email=email, email2=email2, email3=email3)
 
     def get_contact_from_details_page(self, index):
         wd = self.app.wd
@@ -130,3 +135,17 @@ class ContactHelper:
         secondaryphone = re.search("P: (.*)", text).group(1)
         return Contact(homephone=homephone, mobilephone=mobilephone,
                        workphone=workphone, secondaryphone=secondaryphone)
+
+    def clear(self, string):
+        return re.sub("[() -]", "", string)
+
+    def merge_phones_like_on_home_page(self, contact):
+        return "\n".join(filter(lambda x: x != "",
+                                map(lambda x: self.clear(x),
+                                    filter(lambda x: x is not None,
+                                           [contact.homephone, contact.mobilephone,
+                                            contact.workphone, contact.secondaryphone]))))
+
+    def merge_emails_like_on_home_page(self, contact):
+        return "\n".join(filter(lambda x: x != "",
+                                filter(lambda x: x is not None, [contact.email, contact.email2, contact.email3])))

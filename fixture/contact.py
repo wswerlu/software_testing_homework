@@ -1,4 +1,5 @@
 from model.contact import Contact
+import re
 
 
 class ContactHelper:
@@ -15,7 +16,7 @@ class ContactHelper:
         self.change_field_name("firstname", contact.firstname)
         self.change_field_name("lastname", contact.lastname)
         self.change_field_name("address", contact.address)
-        self.change_field_name("home", contact.home_phone)
+        self.change_field_name("home", contact.homephone)
         self.change_field_name("email", contact.email)
 
     def change_field_name(self, field_name, text):
@@ -58,13 +59,24 @@ class ContactHelper:
     def edit_contact_by_index(self, contact, index):
         wd = self.app.wd
         self.open_contact_page()
-        # init first contact editing
-        wd.find_elements_by_css_selector("[alt='Edit']")[index].click()
+        self.open_contact_to_edit_by_index(index)
         self.fill_contact_form(contact)
         # submit contact editing
         wd.find_element_by_name("update").click()
         self.return_to_home_page()
         self.contact_cache = None
+
+    def open_contact_to_edit_by_index(self, index):
+        wd = self.app.wd
+        self.open_contact_page()
+        # init contact editing
+        wd.find_elements_by_css_selector("[alt='Edit']")[index].click()
+
+    def open_contact_details_by_index(self, index):
+        wd = self.app.wd
+        self.open_contact_page()
+        # open contact details
+        wd.find_elements_by_css_selector("[alt='Details']")[index].click()
 
     def count(self):
         wd = self.app.wd
@@ -87,9 +99,34 @@ class ContactHelper:
                 firstname = element.find_element_by_css_selector("td:nth-child(3)").text
                 lastname = element.find_element_by_css_selector("td:nth-child(2)").text
                 address = element.find_element_by_css_selector("td:nth-child(4)").text
-                phone = element.find_element_by_css_selector("td:nth-child(5)").text
-                email = element.find_element_by_css_selector("td:nth-child(6)").text
+                all_phones = element.find_element_by_css_selector("td:nth-child(6)").text
+                all_emails = element.find_element_by_css_selector("td:nth-child(5)").text
                 id = element.find_element_by_name("selected[]").get_attribute("id")
-                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, address=address,
-                                                  home_phone=phone, email=email, id=id))
+                self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id, address=address,
+                                                  all_phones_from_home_page=all_phones,
+                                                  all_emails_from_home_page=all_emails))
         return list(self.contact_cache)
+
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.open_contact_to_edit_by_index(index)
+        firstname = wd.find_element_by_name("firstname").get_attribute("value")
+        lastname = wd.find_element_by_name("lastname").get_attribute("value")
+        id = wd.find_element_by_name("id").get_attribute("value")
+        homephone = wd.find_element_by_name("home").get_attribute("value")
+        mobilephone = wd.find_element_by_name("mobile").get_attribute("value")
+        workphone = wd.find_element_by_name("work").get_attribute("value")
+        secondaryphone = wd.find_element_by_name("phone2").get_attribute("value")
+        return Contact(firstname=firstname, lastname=lastname, id=id, homephone=homephone, mobilephone=mobilephone,
+                       workphone=workphone, secondaryphone=secondaryphone)
+
+    def get_contact_from_details_page(self, index):
+        wd = self.app.wd
+        self.open_contact_details_by_index(index)
+        text = wd.find_element_by_id("content").text
+        homephone = re.search("H: (.*)", text).group(1)
+        mobilephone = re.search("M: (.*)", text).group(1)
+        workphone = re.search("W: (.*)", text).group(1)
+        secondaryphone = re.search("P: (.*)", text).group(1)
+        return Contact(homephone=homephone, mobilephone=mobilephone,
+                       workphone=workphone, secondaryphone=secondaryphone)

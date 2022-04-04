@@ -2,7 +2,7 @@ from model.contact import Contact
 import random
 
 
-def test_delete_some_contact(app, db):
+def test_delete_some_contact(app, db, check_ui):
     app.contact.create_contact_if_it_not_exist(Contact(firstname="test"))
     old_contacts = db.get_contact_list()
     contact = random.choice(old_contacts)
@@ -11,3 +11,7 @@ def test_delete_some_contact(app, db):
     assert len(old_contacts) - 1 == len(new_contacts)
     old_contacts.remove(contact)
     assert old_contacts == new_contacts
+    if check_ui:
+        assert sorted(new_contacts, key=Contact.id_or_max) \
+               == sorted(app.contact.get_contact_list(), key=Contact.id_or_max)
+

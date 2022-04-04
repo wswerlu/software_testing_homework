@@ -53,6 +53,16 @@ class ContactHelper:
         wd.switch_to.alert.accept()
         self.contact_cache = None
 
+    def delete_contact_by_id(self, id):
+        wd = self.app.wd
+        self.open_contact_page()
+        # select contact
+        wd.find_element_by_css_selector(f'input[value="{id}"]').click()
+        # submit deletion
+        wd.find_element_by_css_selector("[value='Delete']").click()
+        wd.switch_to.alert.accept()
+        self.contact_cache = None
+
     def edit_first_contact(self, contact):
         self.edit_contact_by_index(contact, 0)
 

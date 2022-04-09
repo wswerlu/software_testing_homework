@@ -163,7 +163,7 @@ class ContactHelper:
                        workphone=workphone, secondaryphone=secondaryphone)
 
     def clear(self, string):
-        return re.sub("[() -]", "", string)
+        return re.sub("[.() /-]", "", string)
 
     def merge_phones_like_on_home_page(self, contact):
         return "\n".join(filter(lambda x: x != "",

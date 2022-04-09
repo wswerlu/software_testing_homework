@@ -1,5 +1,6 @@
 from model.contact import Contact
 import re
+from selenium.webdriver.support.ui import Select
 
 
 class ContactHelper:
@@ -175,3 +176,39 @@ class ContactHelper:
     def merge_emails_like_on_home_page(self, contact):
         return "\n".join(filter(lambda x: x != "",
                                 filter(lambda x: x is not None, [contact.email, contact.email2, contact.email3])))
+
+    def add_contact_in_group(self, contact_id, group_id):
+        wd = self.app.wd
+        self.open_contact_page()
+        self.select_contact_by_id(contact_id)
+        self.select_group_by_id_for_add_contact(group_id)
+        # submit adding
+        wd.find_element_by_css_selector("[value='Add to']").click()
+        self.go_to_group_page()
+        self.contact_cache = None
+
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_css_selector(f'input[value="{id}"]').click()
+
+    def select_group_by_id_for_add_contact(self, id):
+        wd = self.app.wd
+        Select(wd.find_element_by_name("to_group")).select_by_value(id)
+
+    def go_to_group_page(self):
+        wd = self.app.wd
+        wd.find_element_by_xpath('//a[contains(text(), "group page ")]').click()
+
+    def delete_contact_from_group(self, contact_id, group_id):
+        wd = self.app.wd
+        self.open_contact_page()
+        self.select_group_by_id_for_delete_contact(group_id)
+        self.select_contact_by_id(contact_id)
+        # submit adding
+        wd.find_element_by_name("remove").click()
+        self.go_to_group_page()
+        self.contact_cache = None
+
+    def select_group_by_id_for_delete_contact(self, id):
+        wd = self.app.wd
+        Select(wd.find_element_by_name("group")).select_by_value(id)

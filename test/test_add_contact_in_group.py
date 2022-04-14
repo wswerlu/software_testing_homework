@@ -9,6 +9,9 @@ def test_add_some_contact_in_some_group(app, db, orm):
     groups = db.get_group_list()
     group = random.choice(groups)
     contacts = orm.get_contacts_not_in_group(group)
+    if contacts == []:
+        app.contact.create(Contact(firstname="test"))
+        contacts = orm.get_contacts_not_in_group(group)
     contact = random.choice(contacts)
     app.contact.add_contact_in_group(contact.id, group.id)
     assert contact in orm.get_contacts_in_group(group)

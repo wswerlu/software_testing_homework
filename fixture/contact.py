@@ -1,6 +1,7 @@
 from model.contact import Contact
 import re
 from selenium.webdriver.support.ui import Select
+import time
 
 
 class ContactHelper:
@@ -62,6 +63,7 @@ class ContactHelper:
         # submit deletion
         wd.find_element_by_css_selector("[value='Delete']").click()
         wd.switch_to.alert.accept()
+        time.sleep(1)
         self.contact_cache = None
 
     def edit_first_contact(self, contact):

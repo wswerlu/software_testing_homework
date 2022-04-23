@@ -23,7 +23,7 @@ pyOpenSSL==22.0.0
 pyparsing==3.0.7
 PySocks==1.7.1
 pytest==7.0.1
-pytest-bdd==3.4.0
+pytest-bdd==5.0.0
 selenium==4.1.2
 six==1.16.0
 sniffio==1.2.0

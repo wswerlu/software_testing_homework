@@ -25,6 +25,7 @@ def verify_group_added(db, group_list, new_group):
     old_groups.append(new_group)
     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
 
+
 @given("a non-empty group list")
 def non_empty_group_list(app, db):
     if len(db.get_group_list()) == 0:
